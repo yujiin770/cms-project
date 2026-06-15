@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@theme {
+  /* Define your luxury colors here */
+  --color-chrono-black: #050505;
+  --color-chrono-gold: #3f5591; /* Or your preferred gold hex */
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Inter", sans-serif;
+}

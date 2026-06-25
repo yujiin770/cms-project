@@ -1,12 +1,10 @@
-/* src/index.css */
 @import "tailwindcss";
 
 @theme {
   --color-chrono-black: #050505;
-  --color-chrono-gold: #c5a059; 
-  --color-chrono-blue: #3f5591;
-  --color-chrono-gray: #1a1a1a;
-  
+  --color-chrono-gray: #0f0f0f;
+  --color-chrono-gold: #c5a059;
+  --color-chrono-gold-hover: #e2c28d;
   --font-serif: "Playfair Display", serif;
   --font-sans: "Inter", sans-serif;
 }
@@ -14,5 +12,6 @@
 body {
   background-color: var(--color-chrono-black);
   color: white;
+  font-family: var(--font-sans);
   scroll-behavior: smooth;
 }

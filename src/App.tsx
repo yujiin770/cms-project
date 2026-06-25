@@ -1,39 +1,33 @@
-import { useState } from 'react';
-import { supabase } from './lib/supabase';
-import { useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Home from './pages/public/Home';
+import Dashboard from './pages/admin/Dashboard';
+import Login from './pages/admin/Login';
+import PublicLayout from './components/layout/PublicLayout';
+import AdminSidebar from './components/admin/AdminSidebar';
+import ProtectedRoute from './components/admin/ProtectedRoute';
 
-export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate();
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) alert(error.message);
-    else navigate('/admin/dashboard');
-  };
-
+function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-chrono-black px-4">
-      <form onSubmit={handleLogin} className="bg-chrono-gray p-8 rounded-lg border border-white/10 w-full max-w-md">
-        <h1 className="text-3xl font-serif mb-6 text-center">Admin Portal</h1>
-        <div className="space-y-4">
-          <input 
-            type="email" placeholder="Email" 
-            className="w-full p-3 rounded bg-black border border-white/10 text-white focus:border-chrono-gold outline-none"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input 
-            type="password" placeholder="Password" 
-            className="w-full p-3 rounded bg-black border border-white/10 text-white focus:border-chrono-gold outline-none"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button className="w-full py-3 bg-chrono-blue hover:bg-blue-700 transition rounded font-bold uppercase tracking-widest text-sm">
-            Access Vault
-          </button>
-        </div>
-      </form>
-    </div>
+    <Router>
+      <Routes>
+        {/* PUBLIC ROUTES (With Navbar) */}
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Home />} />
+          {/* Add /watches or /about here later */}
+        </Route>
+
+        {/* AUTH (No Navbar, No Sidebar) */}
+        <Route path="/admin/login" element={<Login />} />
+
+        {/* ADMIN ROUTES (Locked + Sidebar Only) */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AdminSidebar />}>
+            <Route path="/admin/dashboard" element={<Dashboard />} />
+          </Route>
+        </Route>
+      </Routes>
+    </Router>
   );
 }
+
+export default App;

@@ -1,22 +1,16 @@
-// src/lib/storage.ts
-import { supabase } from './supabase';
+// 1. ADD THIS LINE AT THE TOP:
+import { supabase } from './supabase'; 
 
 export const uploadImage = async (file: File, bucket: string = 'inventory') => {
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${Math.random()}.${fileExt}`;
-  const filePath = `${fileName}`; // Folders are handled by the bucket path
+  const fileName = `${Math.random()}-${file.name}`;
+  const filePath = fileName; 
 
-  // 1. Upload to Supabase Storage
   const { error: uploadError } = await supabase.storage
     .from(bucket)
     .upload(filePath, file);
 
-  if (uploadError) {
-    throw new Error(uploadError.message);
-  }
+  if (uploadError) throw uploadError;
 
-  // 2. Get Public URL
   const { data } = supabase.storage.from(bucket).getPublicUrl(filePath);
-  
   return data.publicUrl;
 };

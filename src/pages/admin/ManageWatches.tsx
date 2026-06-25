@@ -11,49 +11,48 @@ export default function ManageWatches() {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this timepiece?")) {
-      await supabase.from('watches').delete().eq('id', id);
-      fetchWatches(); // Refresh list
+    if (window.confirm("Are you sure? This cannot be undone.")) {
+      const { error } = await supabase.from('watches').delete().eq('id', id);
+      if (error) alert("Error deleting");
+      else fetchWatches();
     }
   };
 
   useEffect(() => { fetchWatches(); }, []);
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen text-black">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Watch Inventory</h1>
-        <button className="bg-black text-white px-6 py-2 rounded">Add New Watch</button>
-      </div>
-
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-gray-50 border-b">
-            <tr>
-              <th className="p-4">Watch</th>
-              <th className="p-4">Brand</th>
-              <th className="p-4">Price</th>
-              <th className="p-4">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {watches.map(watch => (
-              <tr key={watch.id} className="border-b hover:bg-gray-50">
-                <td className="p-4 flex items-center gap-3">
-                  <img src={watch.image_url} className="w-12 h-12 object-contain" />
-                  {watch.name}
+    <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100">
+      <table className="w-full text-left">
+        <thead className="bg-gray-50 border-b border-gray-100 text-gray-500 text-xs uppercase tracking-wider">
+          <tr>
+            <th className="p-4">Timepiece</th>
+            <th className="p-4">Brand</th>
+            <th className="p-4">Price</th>
+            <th className="p-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-50">
+          {watches.length === 0 ? (
+            <tr><td colSpan={4} className="p-10 text-center text-gray-400">Inventory is empty. Add your first watch.</td></tr>
+          ) : (
+            watches.map(watch => (
+              <tr key={watch.id} className="hover:bg-gray-50 transition">
+                <td className="p-4 flex items-center gap-4">
+                  <img src={watch.image_url} className="w-12 h-12 object-contain bg-gray-50 rounded" alt="" />
+                  <span className="font-semibold">{watch.name}</span>
                 </td>
-                <td className="p-4">{watch.brand}</td>
-                <td className="p-4">${watch.price}</td>
-                <td className="p-4">
-                  <button className="text-blue-600 mr-4 font-semibold">Edit</button>
-                  <button onClick={() => handleDelete(watch.id)} className="text-red-600 font-semibold">Delete</button>
+                <td className="p-4 text-gray-600">{watch.brand}</td>
+                <td className="p-4 font-mono">${Number(watch.price).toLocaleString()}</td>
+                <td className="p-4 text-right">
+                  <button onClick={() => handleDelete(watch.id)} className="text-red-500 hover:text-red-700 font-medium text-sm">
+                    Delete
+                  </button>
                 </td>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            ))
+          )}
+        </tbody>
+      </table>
     </div>
   );
 }
